@@ -1,0 +1,709 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+
+chan powerOn, powerOff, turnOn, turnedOn, turnedOff, turnOff;
+chan close, open, play, pause, stop, extrude, withdraw, sound, stopSound, outputChange;
+chan leftDrive, rightDrive, drive, stopDrive, flipPlayDir;
+chan turnUp, turnDown, switchOn, switchOff;
+
+bool stereo = true;
+bool mono = false;
+bool forward = true;
+bool reverse = false;
+bool paused = false;
+bool playing = false;
+
+int error_state = 0;
+
+</declaration>
+	<template>
+		<name>MonoStereo</name>
+		<location id="id0" x="-4462" y="-4130">
+			<name x="-4522" y="-4139">Stereo</name>
+		</location>
+		<location id="id1" x="-4462" y="-3850">
+			<name x="-4454" y="-3842">Mono</name>
+		</location>
+		<location id="id2" x="-4462" y="-3986">
+			<name x="-4445" y="-4011">Changing</name>
+			<committed/>
+		</location>
+		<location id="id3" x="-4462" y="-4283">
+			<name x="-4472" y="-4317">Off</name>
+		</location>
+		<init ref="id3"/>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-4632" y="-4309">mono</label>
+			<label kind="synchronisation" x="-4632" y="-4326">switchOn?</label>
+			<nail x="-4811" y="-4284"/>
+			<nail x="-4811" y="-3808"/>
+			<nail x="-4462" y="-3808"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-4105" y="-4088">switchOff?</label>
+			<nail x="-4114" y="-3850"/>
+			<nail x="-4106" y="-4284"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-4785" y="-3944">(paused &amp;&amp; mono) || 
+(!playing &amp;&amp; mono)</label>
+			<nail x="-4641" y="-3986"/>
+			<nail x="-4641" y="-3850"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-4267" y="-4088">(paused &amp;&amp; stereo) || 
+(!playing &amp;&amp; stereo)</label>
+			<nail x="-4275" y="-3987"/>
+			<nail x="-4275" y="-4131"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-4411" y="-4224">switchOff?</label>
+			<nail x="-4411" y="-4215"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-4564" y="-4207">stereo</label>
+			<label kind="synchronisation" x="-4590" y="-4224">switchOn?</label>
+			<nail x="-4522" y="-4215"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-4411" y="-4088">stereo</label>
+			<label kind="synchronisation" x="-4411" y="-4071">outputChange!</label>
+			<nail x="-4411" y="-4062"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="assignment" x="-4411" y="-3935">mono = false,
+stereo = true</label>
+			<nail x="-4420" y="-3918"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-4547" y="-3935">mono</label>
+			<label kind="synchronisation" x="-4607" y="-3918">outputChange!</label>
+			<nail x="-4505" y="-3918"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id2"/>
+			<label kind="assignment" x="-4607" y="-4079">mono = true,
+stereo = false</label>
+			<nail x="-4513" y="-4062"/>
+		</transition>
+	</template>
+	<template>
+		<name>VolumeWheel</name>
+		<declaration>int volume = 0;
+int maxVolume = 10;</declaration>
+		<location id="id4" x="-1377" y="-867">
+			<name x="-1445" y="-876">Volume</name>
+		</location>
+		<location id="id5" x="-1377" y="-1020">
+			<name x="-1411" y="-1054">VolumeUp</name>
+			<committed/>
+		</location>
+		<location id="id6" x="-1368" y="-722">
+			<name x="-1402" y="-705">VolumeDown</name>
+			<committed/>
+		</location>
+		<init ref="id4"/>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id4"/>
+			<nail x="-1411" y="-799"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id6"/>
+			<label kind="guard" x="-1326" y="-824">volume &gt; 0</label>
+			<label kind="assignment" x="-1326" y="-807">volume -= 1</label>
+			<nail x="-1334" y="-799"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id4"/>
+			<nail x="-1334" y="-943"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id5"/>
+			<label kind="guard" x="-1555" y="-960">volume &lt; maxVolume</label>
+			<label kind="assignment" x="-1521" y="-943">volume += 1</label>
+			<nail x="-1419" y="-943"/>
+		</transition>
+	</template>
+	<template>
+		<name>Control</name>
+		<location id="id7" x="-842" y="-425">
+			<name x="-867" y="-408">Standby</name>
+		</location>
+		<location id="id8" x="-850" y="-612">
+			<name x="-867" y="-646">Open</name>
+		</location>
+		<location id="id9" x="-1147" y="-425">
+			<name x="-1189" y="-442">Off</name>
+		</location>
+		<location id="id10" x="-671" y="-340">
+			<name x="-722" y="-323">EngagePlayHead</name>
+			<committed/>
+		</location>
+		<location id="id11" x="-391" y="-340">
+			<name x="-426" y="-324">SoundOut</name>
+			<committed/>
+		</location>
+		<location id="id12" x="-535" y="-340">
+			<name x="-569" y="-323">DriveSpool</name>
+			<committed/>
+		</location>
+		<location id="id13" x="-178" y="-654">
+			<name x="-204" y="-688">Paused</name>
+		</location>
+		<location id="id14" x="-178" y="-340">
+			<name x="-195" y="-323">Playing</name>
+		</location>
+		<location id="id15" x="-365" y="-450">
+			<name x="-348" y="-467">Stopping</name>
+			<committed/>
+		</location>
+		<location id="id16" x="-654" y="-450">
+			<name x="-688" y="-484">StopSpool</name>
+			<committed/>
+		</location>
+		<location id="id17" x="-493" y="-450">
+			<name x="-527" y="-484">StopSound</name>
+			<committed/>
+		</location>
+		<location id="id18" x="-25" y="-425">
+			<name x="-8" y="-433">PauseSound</name>
+			<committed/>
+		</location>
+		<location id="id19" x="-25" y="-544">
+			<name x="0" y="-552">PauseSpool</name>
+			<committed/>
+		</location>
+		<location id="id20" x="-178" y="-527">
+			<name x="-161" y="-535">restartSpool</name>
+			<committed/>
+		</location>
+		<location id="id21" x="-178" y="-433">
+			<name x="-161" y="-442">restartSound</name>
+			<committed/>
+		</location>
+		<location id="id22" x="-994" y="-484">
+			<name x="-1045" y="-518">TurnSwitchOn</name>
+			<committed/>
+		</location>
+		<location id="id23" x="-1003" y="-374">
+			<name x="-1045" y="-357">TurnSwitchOff</name>
+			<committed/>
+		</location>
+		<init ref="id9"/>
+		<transition>
+			<source ref="id23"/>
+			<target ref="id9"/>
+			<label kind="synchronisation" x="-1130" y="-391">switchOff!</label>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id23"/>
+			<label kind="synchronisation" x="-943" y="-391">turnedOff?</label>
+		</transition>
+		<transition>
+			<source ref="id22"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-943" y="-484">switchOn!</label>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id22"/>
+			<label kind="synchronisation" x="-1122" y="-484">turnedOn?</label>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id7"/>
+			<label kind="guard" x="-612" y="-603">paused</label>
+			<label kind="synchronisation" x="-612" y="-586">withdraw!</label>
+			<label kind="assignment" x="-612" y="-569">paused = false</label>
+			<nail x="-408" y="-544"/>
+			<nail x="-739" y="-544"/>
+		</transition>
+		<transition>
+			<source ref="id16"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-731" y="-442">withdraw!</label>
+		</transition>
+		<transition>
+			<source ref="id17"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="-595" y="-450">stopDrive!</label>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id17"/>
+			<label kind="guard" x="-459" y="-425">!paused</label>
+			<label kind="synchronisation" x="-459" y="-442">stopSound!</label>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id15"/>
+			<label kind="synchronisation" x="-297" y="-680">stop?</label>
+			<nail x="-365" y="-654"/>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id20"/>
+			<label kind="synchronisation" x="-170" y="-637">play?</label>
+			<label kind="assignment" x="-170" y="-620">paused = false</label>
+			<nail x="-178" y="-620"/>
+		</transition>
+		<transition>
+			<source ref="id21"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="-170" y="-416">sound!</label>
+			<label kind="assignment" x="-170" y="-399">playing = true</label>
+			<nail x="-178" y="-425"/>
+		</transition>
+		<transition>
+			<source ref="id20"/>
+			<target ref="id21"/>
+			<label kind="synchronisation" x="-170" y="-501">drive!</label>
+		</transition>
+		<transition>
+			<source ref="id18"/>
+			<target ref="id19"/>
+			<label kind="synchronisation" x="-17" y="-493">stopSound!</label>
+		</transition>
+		<transition>
+			<source ref="id19"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="-17" y="-637">stopDrive!</label>
+			<label kind="assignment" x="-17" y="-620">paused = true</label>
+			<nail x="-25" y="-654"/>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id18"/>
+			<label kind="synchronisation" x="-17" y="-365">pause?</label>
+			<label kind="assignment" x="-17" y="-348">playing = false</label>
+			<nail x="-25" y="-340"/>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id15"/>
+			<label kind="synchronisation" x="-340" y="-408">stop?</label>
+			<label kind="assignment" x="-357" y="-391">playing = false</label>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="-323" y="-340">sound!</label>
+			<label kind="assignment" x="-323" y="-331">playing = true</label>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="-765" y="-408">play?</label>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="-484" y="-357">drive!</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id12"/>
+			<label kind="synchronisation" x="-629" y="-357">extrude!</label>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-935" y="-544">close?</label>
+			<nail x="-884" y="-527"/>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id8"/>
+			<label kind="synchronisation" x="-808" y="-561">open?</label>
+			<nail x="-808" y="-535"/>
+		</transition>
+	</template>
+	<template>
+		<name>PlayHead</name>
+		<location id="id24" x="-850" y="-391">
+			<name x="-935" y="-416">Withdrawn</name>
+		</location>
+		<location id="id25" x="-663" y="-561">
+			<name x="-714" y="-595">ForwardPlaying</name>
+		</location>
+		<location id="id26" x="-671" y="-221">
+			<name x="-722" y="-204">ReversePlaying</name>
+		</location>
+		<location id="id27" x="-671" y="-391">
+			<name x="-646" y="-408">Changing</name>
+			<committed/>
+		</location>
+		<init ref="id24"/>
+		<transition>
+			<source ref="id25"/>
+			<target ref="id27"/>
+			<label kind="guard" x="-612" y="-484">reverse</label>
+			<label kind="synchronisation" x="-612" y="-501">flipPlayDir?</label>
+			<nail x="-612" y="-476"/>
+		</transition>
+		<transition>
+			<source ref="id27"/>
+			<target ref="id25"/>
+			<label kind="guard" x="-773" y="-484">forward</label>
+			<nail x="-680" y="-408"/>
+			<nail x="-722" y="-476"/>
+		</transition>
+		<transition>
+			<source ref="id26"/>
+			<target ref="id27"/>
+			<label kind="guard" x="-620" y="-323">forward</label>
+			<label kind="synchronisation" x="-620" y="-306">flipPlayDir?</label>
+			<nail x="-620" y="-306"/>
+		</transition>
+		<transition>
+			<source ref="id27"/>
+			<target ref="id26"/>
+			<label kind="guard" x="-782" y="-314">reverse</label>
+			<nail x="-731" y="-306"/>
+		</transition>
+		<transition>
+			<source ref="id24"/>
+			<target ref="id27"/>
+			<label kind="synchronisation" x="-799" y="-416">extrude?</label>
+		</transition>
+		<transition>
+			<source ref="id26"/>
+			<target ref="id24"/>
+			<label kind="synchronisation" x="-841" y="-221">withdraw?</label>
+			<nail x="-850" y="-221"/>
+		</transition>
+		<transition>
+			<source ref="id25"/>
+			<target ref="id24"/>
+			<label kind="synchronisation" x="-841" y="-586">withdraw?</label>
+			<nail x="-850" y="-561"/>
+		</transition>
+	</template>
+	<template>
+		<name>SoundOutput</name>
+		<location id="id28" x="-2227" y="-1861">
+			<name x="-2278" y="-1870">Off</name>
+		</location>
+		<location id="id29" x="-2014" y="-1861">
+			<name x="-2048" y="-1895">Output</name>
+			<committed/>
+		</location>
+		<location id="id30" x="-1861" y="-1997">
+			<name x="-1871" y="-2031">Mono</name>
+		</location>
+		<location id="id31" x="-1861" y="-1708">
+			<name x="-1878" y="-1691">Stereo</name>
+		</location>
+		<init ref="id28"/>
+		<transition>
+			<source ref="id30"/>
+			<target ref="id31"/>
+			<label kind="guard" x="-1853" y="-1887">!mono</label>
+			<label kind="synchronisation" x="-1853" y="-1870">outputChange?</label>
+		</transition>
+		<transition>
+			<source ref="id31"/>
+			<target ref="id30"/>
+			<label kind="guard" x="-1734" y="-1878">!stereo</label>
+			<label kind="synchronisation" x="-1734" y="-1861">outputChange?</label>
+			<nail x="-1742" y="-1708"/>
+			<nail x="-1742" y="-1997"/>
+		</transition>
+		<transition>
+			<source ref="id30"/>
+			<target ref="id28"/>
+			<label kind="synchronisation" x="-2133" y="-2023">stopSound?</label>
+			<nail x="-2227" y="-1997"/>
+		</transition>
+		<transition>
+			<source ref="id31"/>
+			<target ref="id28"/>
+			<label kind="synchronisation" x="-2133" y="-1708">stopSound?</label>
+			<nail x="-2227" y="-1708"/>
+		</transition>
+		<transition>
+			<source ref="id29"/>
+			<target ref="id31"/>
+			<label kind="guard" x="-1989" y="-1785">stereo</label>
+			<nail x="-1946" y="-1793"/>
+		</transition>
+		<transition>
+			<source ref="id29"/>
+			<target ref="id30"/>
+			<label kind="guard" x="-1972" y="-1955">mono</label>
+			<nail x="-1938" y="-1929"/>
+		</transition>
+		<transition>
+			<source ref="id28"/>
+			<target ref="id29"/>
+			<label kind="synchronisation" x="-2142" y="-1887">sound?</label>
+			<nail x="-2125" y="-1861"/>
+		</transition>
+	</template>
+	<template>
+		<name>SpoolDrive</name>
+		<location id="id32" x="-6120" y="-5890">
+			<name x="-6162" y="-5916">Still</name>
+		</location>
+		<location id="id33" x="-5933" y="-5992">
+			<name x="-5975" y="-6035">DrivingLeft</name>
+		</location>
+		<location id="id34" x="-5933" y="-5788">
+			<name x="-5984" y="-5771">DrivingRight</name>
+		</location>
+		<location id="id35" x="-5780" y="-5890">
+			<name x="-5763" y="-5899">Resistance</name>
+			<committed/>
+		</location>
+		<location id="id36" x="-6018" y="-5890">
+			<name x="-6069" y="-5873">Engaging</name>
+			<committed/>
+		</location>
+		<init ref="id32"/>
+		<transition>
+			<source ref="id35"/>
+			<target ref="id36"/>
+			<label kind="synchronisation" x="-5924" y="-5916">flipPlayDir!</label>
+		</transition>
+		<transition>
+			<source ref="id36"/>
+			<target ref="id34"/>
+			<label kind="guard" x="-5975" y="-5856">forward</label>
+		</transition>
+		<transition>
+			<source ref="id36"/>
+			<target ref="id33"/>
+			<label kind="guard" x="-5975" y="-5941">reverse</label>
+		</transition>
+		<transition>
+			<source ref="id32"/>
+			<target ref="id36"/>
+			<label kind="synchronisation" x="-6086" y="-5916">drive?</label>
+		</transition>
+		<transition>
+			<source ref="id34"/>
+			<target ref="id35"/>
+			<label kind="assignment" x="-5839" y="-5848">forward = false,
+reverse = true</label>
+		</transition>
+		<transition>
+			<source ref="id33"/>
+			<target ref="id35"/>
+			<label kind="assignment" x="-5848" y="-5975">forward = true,
+reverse = false</label>
+		</transition>
+		<transition>
+			<source ref="id33"/>
+			<target ref="id32"/>
+			<label kind="synchronisation" x="-6120" y="-6018">stopDrive?</label>
+			<nail x="-6120" y="-5992"/>
+		</transition>
+		<transition>
+			<source ref="id34"/>
+			<target ref="id32"/>
+			<label kind="synchronisation" x="-6120" y="-5780">stopDrive?</label>
+			<nail x="-6120" y="-5788"/>
+		</transition>
+	</template>
+	<template>
+		<name>PowerSupply</name>
+		<location id="id37" x="-995" y="-298">
+			<name x="-1003" y="-332">Off</name>
+		</location>
+		<location id="id38" x="-782" y="-357">
+			<name x="-809" y="-391">TurningOn</name>
+			<committed/>
+		</location>
+		<location id="id39" x="-595" y="-297">
+			<name x="-605" y="-331">On</name>
+		</location>
+		<location id="id40" x="-790" y="-229">
+			<name x="-824" y="-212">TurningOff</name>
+			<committed/>
+		</location>
+		<init ref="id37"/>
+		<transition>
+			<source ref="id38"/>
+			<target ref="id39"/>
+			<label kind="synchronisation" x="-714" y="-357">turnedOn!</label>
+		</transition>
+		<transition>
+			<source ref="id37"/>
+			<target ref="id38"/>
+			<label kind="synchronisation" x="-943" y="-357">powerOn?</label>
+		</transition>
+		<transition>
+			<source ref="id40"/>
+			<target ref="id37"/>
+			<label kind="synchronisation" x="-943" y="-255">turnedOff!</label>
+		</transition>
+		<transition>
+			<source ref="id39"/>
+			<target ref="id40"/>
+			<label kind="synchronisation" x="-697" y="-263">powerOff?</label>
+		</transition>
+	</template>
+	<template>
+		<name x="5" y="5">Interface</name>
+		<declaration>// Place local declarations here.</declaration>
+		<location id="id41" x="-7812" y="-7369">
+			<name x="-7822" y="-7403">Off</name>
+		</location>
+		<location id="id42" x="-7642" y="-7377">
+			<name x="-7650" y="-7386">On</name>
+		</location>
+		<location id="id43" x="-7480" y="-7369">
+			<name x="-7446" y="-7377">Playing</name>
+		</location>
+		<location id="id44" x="-7463" y="-7573">
+			<name x="-7473" y="-7607">Paused</name>
+		</location>
+		<location id="id45" x="-7633" y="-7182">
+			<name x="-7659" y="-7165">Opened</name>
+		</location>
+		<init ref="id41"/>
+		<transition>
+			<source ref="id44"/>
+			<target ref="id42"/>
+			<label kind="synchronisation" x="-7582" y="-7598">stop!</label>
+			<nail x="-7642" y="-7573"/>
+		</transition>
+		<transition>
+			<source ref="id45"/>
+			<target ref="id42"/>
+			<label kind="synchronisation" x="-7727" y="-7275">close!</label>
+			<nail x="-7684" y="-7258"/>
+		</transition>
+		<transition>
+			<source ref="id42"/>
+			<target ref="id45"/>
+			<label kind="synchronisation" x="-7591" y="-7267">open!</label>
+			<nail x="-7591" y="-7258"/>
+		</transition>
+		<transition>
+			<source ref="id44"/>
+			<target ref="id43"/>
+			<label kind="synchronisation" x="-7412" y="-7496">play!</label>
+			<nail x="-7421" y="-7479"/>
+		</transition>
+		<transition>
+			<source ref="id43"/>
+			<target ref="id44"/>
+			<label kind="synchronisation" x="-7557" y="-7505">pause!</label>
+			<nail x="-7514" y="-7479"/>
+		</transition>
+		<transition>
+			<source ref="id43"/>
+			<target ref="id42"/>
+			<label kind="synchronisation" x="-7582" y="-7318">stop!</label>
+			<nail x="-7565" y="-7318"/>
+		</transition>
+		<transition>
+			<source ref="id42"/>
+			<target ref="id43"/>
+			<label kind="synchronisation" x="-7574" y="-7446">play!</label>
+			<nail x="-7557" y="-7420"/>
+		</transition>
+		<transition>
+			<source ref="id42"/>
+			<target ref="id41"/>
+			<label kind="synchronisation" x="-7752" y="-7318">powerOff!</label>
+			<nail x="-7718" y="-7318"/>
+		</transition>
+		<transition>
+			<source ref="id41"/>
+			<target ref="id42"/>
+			<label kind="synchronisation" x="-7761" y="-7437">powerOn!</label>
+			<nail x="-7727" y="-7420"/>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+control = Control();
+playHead = PlayHead();
+soundOutput = SoundOutput();
+powerSupply = PowerSupply();
+interface = Interface();
+spoolDrive = SpoolDrive();
+monoStereo = MonoStereo();
+volumeWheel = VolumeWheel();
+
+// List one or more processes to be composed into a system.
+system control, playHead, soundOutput, powerSupply, spoolDrive, monoStereo, volumeWheel, interface;
+    </system>
+	<queries>
+		<query>
+			<formula>A[] control.Paused imply !playHead.Withdrawn</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E[] control.Playing imply control.Paused</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; control.Open imply (!spoolDrive.DrivingLeft || !spoolDrive.DrivingRight)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; forward imply !reverse</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; volumeWheel.VolumeDown imply (volumeWheel.volume &gt; 0)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; volumeWheel.VolumeUp imply (volumeWheel.volume &lt; volumeWheel.maxVolume)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; volumeWheel.VolumeUp imply !volumeWheel.VolumeDown</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; control.Playing imply !playHead.Withdrawn</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; control.Playing imply !control.Paused</formula>
+			<comment>Cannot be playing and paused at the same time</comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; monoStereo.Mono imply !monoStereo.Stereo</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; interface.Playing imply control.Playing</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] !deadlock</formula>
+			<comment>Deadlock check</comment>
+		</query>
+	</queries>
+</nta>
