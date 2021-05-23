@@ -226,12 +226,18 @@ int maxVolume = 10;</declaration>
 		</location>
 		<location id="id28" x="-170" y="-238">
 		</location>
+		<location id="id29" x="-272" y="-229">
+		</location>
 		<init ref="id9"/>
 		<transition>
-			<source ref="id28"/>
+			<source ref="id29"/>
 			<target ref="id14"/>
-			<label kind="synchronisation" x="-263" y="-280">flipped?</label>
-			<nail x="-221" y="-289"/>
+			<label kind="synchronisation" x="-254" y="-301">driving?</label>
+		</transition>
+		<transition>
+			<source ref="id28"/>
+			<target ref="id29"/>
+			<label kind="synchronisation" x="-246" y="-229">flipped?</label>
 		</transition>
 		<transition>
 			<source ref="id27"/>
@@ -392,400 +398,433 @@ int maxVolume = 10;</declaration>
 		<declaration>clock clockPlayHead;
 bool playHeadError = false;
 bool flipHeadError = false;</declaration>
-		<location id="id29" x="-1139" y="-399">
+		<location id="id30" x="-1139" y="-399">
 			<name x="-1224" y="-390">Withdrawn</name>
 		</location>
-		<location id="id30" x="-714" y="-561">
+		<location id="id31" x="-714" y="-561">
 			<name x="-765" y="-595">ForwardPlaying</name>
 		</location>
-		<location id="id31" x="-722" y="-221">
+		<location id="id32" x="-722" y="-221">
 			<name x="-773" y="-204">ReversePlaying</name>
 		</location>
-		<location id="id32" x="-722" y="-391">
+		<location id="id33" x="-722" y="-391">
 			<name x="-756" y="-382">Changed</name>
 			<committed/>
 		</location>
-		<location id="id33" x="-1028" y="-399">
+		<location id="id34" x="-1028" y="-399">
 			<name x="-1062" y="-374">Changing</name>
 			<label kind="invariant" x="-1096" y="-391">clockPlayHead &lt;= 300</label>
 		</location>
-		<location id="id34" x="-935" y="-297">
+		<location id="id35" x="-935" y="-297">
 			<name x="-994" y="-280">PlayHeadErrorState</name>
+			<committed/>
 		</location>
-		<location id="id35" x="-348" y="-391">
+		<location id="id36" x="-348" y="-391">
 			<name x="-399" y="-374">FlippingPlayDir</name>
 			<committed/>
 		</location>
-		<location id="id36" x="-612" y="-391">
+		<location id="id37" x="-612" y="-391">
 			<name x="-637" y="-382">Flipping</name>
 			<label kind="invariant" x="-680" y="-408">clockPlayHead &lt;= 200</label>
 		</location>
-		<location id="id37" x="-501" y="-331">
+		<location id="id38" x="-501" y="-331">
 			<name x="-544" y="-323">FlippingError</name>
-		</location>
-		<location id="id38" x="-603" y="-144">
 			<committed/>
 		</location>
-		<location id="id39" x="-595" y="-629">
+		<location id="id39" x="-603" y="-144">
 			<committed/>
 		</location>
-		<init ref="id29"/>
+		<location id="id40" x="-595" y="-629">
+			<committed/>
+		</location>
+		<init ref="id30"/>
 		<transition>
-			<source ref="id39"/>
-			<target ref="id30"/>
+			<source ref="id40"/>
+			<target ref="id31"/>
 			<label kind="synchronisation" x="-696" y="-612">extruded!</label>
 		</transition>
 		<transition>
-			<source ref="id38"/>
-			<target ref="id31"/>
+			<source ref="id39"/>
+			<target ref="id32"/>
 			<label kind="synchronisation" x="-663" y="-195">extruded!</label>
 		</transition>
 		<transition>
-			<source ref="id37"/>
-			<target ref="id35"/>
+			<source ref="id38"/>
+			<target ref="id36"/>
 		</transition>
 		<transition>
-			<source ref="id36"/>
-			<target ref="id35"/>
+			<source ref="id37"/>
+			<target ref="id36"/>
 			<label kind="guard" x="-594" y="-425">clockPlayHead &gt;= 100</label>
 		</transition>
 		<transition>
-			<source ref="id36"/>
-			<target ref="id37"/>
+			<source ref="id37"/>
+			<target ref="id38"/>
 			<label kind="guard" x="-612" y="-365">clockPlayHead == 200</label>
 			<label kind="assignment" x="-594" y="-361">flipHeadError = true</label>
 		</transition>
 		<transition>
-			<source ref="id35"/>
-			<target ref="id38"/>
+			<source ref="id36"/>
+			<target ref="id39"/>
 			<label kind="guard" x="-518" y="-212">reverse</label>
 			<label kind="synchronisation" x="-450" y="-212">flipped!</label>
 			<nail x="-348" y="-221"/>
 		</transition>
 		<transition>
-			<source ref="id35"/>
-			<target ref="id39"/>
+			<source ref="id36"/>
+			<target ref="id40"/>
 			<label kind="guard" x="-552" y="-586">forward</label>
 			<label kind="synchronisation" x="-552" y="-603">flipped!</label>
 			<nail x="-348" y="-561"/>
 		</transition>
 		<transition>
-			<source ref="id34"/>
-			<target ref="id32"/>
+			<source ref="id35"/>
+			<target ref="id33"/>
 		</transition>
 		<transition>
-			<source ref="id33"/>
-			<target ref="id32"/>
+			<source ref="id34"/>
+			<target ref="id33"/>
 			<label kind="guard" x="-977" y="-433">clockPlayHead &gt;= 50</label>
 		</transition>
 		<transition>
-			<source ref="id33"/>
-			<target ref="id34"/>
+			<source ref="id34"/>
+			<target ref="id35"/>
 			<label kind="guard" x="-1054" y="-348">clockPlayHead == 300</label>
 			<label kind="assignment" x="-1054" y="-331">playHeadError = true</label>
 		</transition>
 		<transition>
-			<source ref="id29"/>
-			<target ref="id33"/>
+			<source ref="id30"/>
+			<target ref="id34"/>
 			<label kind="synchronisation" x="-1113" y="-416">extrude?</label>
 			<label kind="assignment" x="-1130" y="-433">clockPlayHead := 0</label>
 		</transition>
 		<transition>
-			<source ref="id30"/>
-			<target ref="id36"/>
+			<source ref="id31"/>
+			<target ref="id37"/>
 			<label kind="synchronisation" x="-705" y="-493">flipPlayDir?</label>
 			<label kind="assignment" x="-697" y="-476">clockPlayHead := 0</label>
 		</transition>
 		<transition>
-			<source ref="id32"/>
-			<target ref="id30"/>
+			<source ref="id33"/>
+			<target ref="id31"/>
 			<label kind="guard" x="-824" y="-484">forward</label>
 			<label kind="synchronisation" x="-790" y="-459">extruded!</label>
 			<nail x="-731" y="-408"/>
 			<nail x="-773" y="-476"/>
 		</transition>
 		<transition>
-			<source ref="id31"/>
-			<target ref="id36"/>
+			<source ref="id32"/>
+			<target ref="id37"/>
 			<label kind="synchronisation" x="-697" y="-306">flipPlayDir?</label>
 			<label kind="assignment" x="-714" y="-323">clockPlayHead := 0</label>
 		</transition>
 		<transition>
-			<source ref="id32"/>
-			<target ref="id31"/>
+			<source ref="id33"/>
+			<target ref="id32"/>
 			<label kind="guard" x="-833" y="-314">reverse</label>
 			<label kind="synchronisation" x="-799" y="-340">extruded!</label>
 			<nail x="-782" y="-306"/>
 		</transition>
 		<transition>
-			<source ref="id31"/>
-			<target ref="id29"/>
+			<source ref="id32"/>
+			<target ref="id30"/>
 			<label kind="synchronisation" x="-1139" y="-221">withdraw?</label>
 			<nail x="-1139" y="-221"/>
 		</transition>
 		<transition>
-			<source ref="id30"/>
-			<target ref="id29"/>
+			<source ref="id31"/>
+			<target ref="id30"/>
 			<label kind="synchronisation" x="-850" y="-586">withdraw?</label>
 			<nail x="-1139" y="-561"/>
 		</transition>
 	</template>
 	<template>
 		<name>SoundOutput</name>
-		<location id="id40" x="-2227" y="-1861">
+		<location id="id41" x="-2227" y="-1861">
 			<name x="-2261" y="-1870">Off</name>
 		</location>
-		<location id="id41" x="-2125" y="-1861">
+		<location id="id42" x="-2125" y="-1861">
 			<name x="-2167" y="-1895">Output</name>
 			<committed/>
 		</location>
-		<location id="id42" x="-2082" y="-1972">
+		<location id="id43" x="-2082" y="-1972">
 			<name x="-2099" y="-2006">Mono</name>
 		</location>
-		<location id="id43" x="-2082" y="-1751">
+		<location id="id44" x="-2082" y="-1751">
 			<name x="-2108" y="-1742">Stereo</name>
 		</location>
-		<init ref="id40"/>
+		<init ref="id41"/>
 		<transition>
-			<source ref="id42"/>
-			<target ref="id43"/>
+			<source ref="id43"/>
+			<target ref="id44"/>
 			<label kind="guard" x="-2074" y="-1887">!mono</label>
 			<label kind="synchronisation" x="-2074" y="-1870">outputChange?</label>
 		</transition>
 		<transition>
-			<source ref="id43"/>
-			<target ref="id42"/>
+			<source ref="id44"/>
+			<target ref="id43"/>
 			<label kind="guard" x="-2048" y="-2014">!stereo</label>
 			<label kind="synchronisation" x="-2048" y="-1997">outputChange?</label>
 			<nail x="-1963" y="-1751"/>
 			<nail x="-1963" y="-1972"/>
 		</transition>
 		<transition>
-			<source ref="id42"/>
-			<target ref="id40"/>
+			<source ref="id43"/>
+			<target ref="id41"/>
 			<label kind="synchronisation" x="-2227" y="-1997">stopSound?</label>
 			<nail x="-2227" y="-1972"/>
 		</transition>
 		<transition>
-			<source ref="id43"/>
-			<target ref="id40"/>
+			<source ref="id44"/>
+			<target ref="id41"/>
 			<label kind="synchronisation" x="-2218" y="-1742">stopSound?</label>
 			<nail x="-2227" y="-1751"/>
 		</transition>
 		<transition>
-			<source ref="id41"/>
-			<target ref="id43"/>
+			<source ref="id42"/>
+			<target ref="id44"/>
 			<label kind="guard" x="-2150" y="-1819">stereo</label>
+		</transition>
+		<transition>
+			<source ref="id42"/>
+			<target ref="id43"/>
+			<label kind="guard" x="-2142" y="-1955">mono</label>
 		</transition>
 		<transition>
 			<source ref="id41"/>
 			<target ref="id42"/>
-			<label kind="guard" x="-2142" y="-1955">mono</label>
-		</transition>
-		<transition>
-			<source ref="id40"/>
-			<target ref="id41"/>
 			<label kind="synchronisation" x="-2201" y="-1878">sound?</label>
 			<nail x="-2142" y="-1861"/>
 		</transition>
 	</template>
 	<template>
 		<name>SpoolDrive</name>
-		<location id="id44" x="-6120" y="-5890">
-			<name x="-6162" y="-5916">Still</name>
+		<declaration>clock clockSpoolDrive;
+
+bool errorSpoolDrive = false;</declaration>
+		<location id="id45" x="-6596" y="-5890">
+			<name x="-6638" y="-5916">Still</name>
 		</location>
-		<location id="id45" x="-6018" y="-5992">
+		<location id="id46" x="-6018" y="-5992">
 			<name x="-6043" y="-6035">DrivingLeft</name>
 		</location>
-		<location id="id46" x="-6018" y="-5788">
+		<location id="id47" x="-6018" y="-5788">
 			<name x="-6052" y="-5771">DrivingRight</name>
 		</location>
-		<location id="id47" x="-5865" y="-5890">
+		<location id="id48" x="-5865" y="-5890">
 			<name x="-5882" y="-5873">Resistance</name>
 			<committed/>
 		</location>
-		<location id="id48" x="-6018" y="-5890">
-			<name x="-6086" y="-5882">Engaging</name>
+		<location id="id49" x="-6018" y="-5890">
+			<name x="-6086" y="-5882">Engaged</name>
 			<committed/>
 		</location>
-		<location id="id49" x="-5678" y="-5890">
+		<location id="id50" x="-5678" y="-5890">
 			<committed/>
 		</location>
-		<location id="id50" x="-5754" y="-5848">
+		<location id="id51" x="-5754" y="-5848">
 		</location>
-		<init ref="id44"/>
+		<location id="id52" x="-6349" y="-5941">
+			<name x="-6383" y="-5933">Engaging</name>
+			<label kind="invariant" x="-6426" y="-5975">clockSpoolDrive &lt;= 200</label>
+		</location>
+		<location id="id53" x="-6494" y="-5822">
+			<name x="-6528" y="-5814">EngageError</name>
+			<committed/>
+		</location>
+		<init ref="id45"/>
 		<transition>
-			<source ref="id50"/>
+			<source ref="id52"/>
 			<target ref="id49"/>
+			<label kind="guard" x="-6239" y="-5924">clockSpoolDrive &gt; 50</label>
+		</transition>
+		<transition>
+			<source ref="id53"/>
+			<target ref="id49"/>
+		</transition>
+		<transition>
+			<source ref="id52"/>
+			<target ref="id53"/>
+			<label kind="guard" x="-6519" y="-5899">clockSpoolDrive == 200</label>
+			<label kind="assignment" x="-6511" y="-5882">errorSpoolDrive = true</label>
+		</transition>
+		<transition>
+			<source ref="id51"/>
+			<target ref="id50"/>
 			<label kind="synchronisation" x="-5780" y="-5882">extruded?</label>
 		</transition>
 		<transition>
-			<source ref="id49"/>
-			<target ref="id46"/>
-			<label kind="guard" x="-5839" y="-5780">forward</label>
-			<nail x="-5678" y="-5788"/>
+			<source ref="id50"/>
+			<target ref="id52"/>
+			<label kind="guard" x="-6332" y="-5678">forward</label>
+			<label kind="assignment" x="-6349" y="-5703">clockSpoolDrive := 0</label>
+			<nail x="-5678" y="-5686"/>
+			<nail x="-6349" y="-5677"/>
 		</transition>
 		<transition>
-			<source ref="id49"/>
-			<target ref="id45"/>
-			<label kind="guard" x="-5839" y="-6018">reverse</label>
-			<nail x="-5678" y="-5992"/>
-		</transition>
-		<transition>
-			<source ref="id47"/>
-			<target ref="id50"/>
-			<label kind="synchronisation" x="-5856" y="-5916">flipping!</label>
+			<source ref="id50"/>
+			<target ref="id52"/>
+			<label kind="guard" x="-6324" y="-6086">reverse</label>
+			<label kind="assignment" x="-6341" y="-6060">clockSpoolDrive := 0</label>
+			<nail x="-5678" y="-6069"/>
+			<nail x="-6349" y="-6069"/>
 		</transition>
 		<transition>
 			<source ref="id48"/>
-			<target ref="id46"/>
+			<target ref="id51"/>
+			<label kind="synchronisation" x="-5856" y="-5916">flipping!</label>
+		</transition>
+		<transition>
+			<source ref="id49"/>
+			<target ref="id47"/>
 			<label kind="guard" x="-5984" y="-5865">forward</label>
 			<label kind="synchronisation" x="-6018" y="-5856">driving!</label>
 		</transition>
 		<transition>
-			<source ref="id48"/>
-			<target ref="id45"/>
+			<source ref="id49"/>
+			<target ref="id46"/>
 			<label kind="guard" x="-5992" y="-5950">reverse</label>
 			<label kind="synchronisation" x="-6018" y="-5958">driving!</label>
 		</transition>
 		<transition>
-			<source ref="id44"/>
-			<target ref="id48"/>
-			<label kind="synchronisation" x="-6103" y="-5916">drive?</label>
+			<source ref="id45"/>
+			<target ref="id52"/>
+			<label kind="synchronisation" x="-6579" y="-5916">drive?</label>
+			<label kind="assignment" x="-6545" y="-5933">clockSpoolDrive := 0</label>
 		</transition>
 		<transition>
-			<source ref="id46"/>
-			<target ref="id47"/>
+			<source ref="id47"/>
+			<target ref="id48"/>
 			<label kind="assignment" x="-5941" y="-5831">forward = false,
 reverse = true</label>
 		</transition>
 		<transition>
-			<source ref="id45"/>
-			<target ref="id47"/>
+			<source ref="id46"/>
+			<target ref="id48"/>
 			<label kind="assignment" x="-5950" y="-5992">forward = true,
 reverse = false</label>
 		</transition>
 		<transition>
-			<source ref="id45"/>
-			<target ref="id44"/>
-			<label kind="synchronisation" x="-6120" y="-6018">stopDrive?</label>
-			<nail x="-6120" y="-5992"/>
+			<source ref="id46"/>
+			<target ref="id45"/>
+			<label kind="synchronisation" x="-6460" y="-6018">stopDrive?</label>
+			<nail x="-6596" y="-5992"/>
 		</transition>
 		<transition>
-			<source ref="id46"/>
-			<target ref="id44"/>
-			<label kind="synchronisation" x="-6120" y="-5788">stopDrive?</label>
-			<nail x="-6120" y="-5788"/>
+			<source ref="id47"/>
+			<target ref="id45"/>
+			<label kind="synchronisation" x="-6460" y="-5788">stopDrive?</label>
+			<nail x="-6596" y="-5788"/>
 		</transition>
 	</template>
 	<template>
 		<name>PowerSupply</name>
-		<location id="id51" x="-995" y="-298">
+		<location id="id54" x="-995" y="-298">
 			<name x="-1003" y="-332">Off</name>
 		</location>
-		<location id="id52" x="-824" y="-357">
+		<location id="id55" x="-824" y="-357">
 			<name x="-851" y="-391">TurningOn</name>
 			<committed/>
 		</location>
-		<location id="id53" x="-671" y="-297">
+		<location id="id56" x="-671" y="-297">
 			<name x="-681" y="-331">On</name>
 		</location>
-		<location id="id54" x="-832" y="-229">
+		<location id="id57" x="-832" y="-229">
 			<name x="-866" y="-212">TurningOff</name>
 			<committed/>
 		</location>
-		<init ref="id51"/>
+		<init ref="id54"/>
 		<transition>
-			<source ref="id52"/>
-			<target ref="id53"/>
+			<source ref="id55"/>
+			<target ref="id56"/>
 			<label kind="synchronisation" x="-782" y="-357">turnedOn!</label>
 		</transition>
 		<transition>
-			<source ref="id51"/>
-			<target ref="id52"/>
+			<source ref="id54"/>
+			<target ref="id55"/>
 			<label kind="synchronisation" x="-943" y="-357">powerOn?</label>
 		</transition>
 		<transition>
-			<source ref="id54"/>
-			<target ref="id51"/>
+			<source ref="id57"/>
+			<target ref="id54"/>
 			<label kind="synchronisation" x="-943" y="-255">turnedOff!</label>
 		</transition>
 		<transition>
-			<source ref="id53"/>
-			<target ref="id54"/>
+			<source ref="id56"/>
+			<target ref="id57"/>
 			<label kind="synchronisation" x="-765" y="-263">powerOff?</label>
 		</transition>
 	</template>
 	<template>
 		<name x="5" y="5">Interface</name>
 		<declaration>// Place local declarations here.</declaration>
-		<location id="id55" x="-7812" y="-7369">
+		<location id="id58" x="-7812" y="-7369">
 			<name x="-7822" y="-7403">Off</name>
 		</location>
-		<location id="id56" x="-7642" y="-7377">
+		<location id="id59" x="-7642" y="-7377">
 			<name x="-7650" y="-7386">On</name>
 		</location>
-		<location id="id57" x="-7480" y="-7369">
+		<location id="id60" x="-7480" y="-7369">
 			<name x="-7446" y="-7377">Playing</name>
 		</location>
-		<location id="id58" x="-7463" y="-7573">
+		<location id="id61" x="-7463" y="-7573">
 			<name x="-7473" y="-7607">Paused</name>
 		</location>
-		<location id="id59" x="-7633" y="-7182">
+		<location id="id62" x="-7633" y="-7182">
 			<name x="-7659" y="-7165">Opened</name>
 		</location>
-		<init ref="id55"/>
+		<init ref="id58"/>
 		<transition>
-			<source ref="id58"/>
-			<target ref="id56"/>
+			<source ref="id61"/>
+			<target ref="id59"/>
 			<label kind="synchronisation" x="-7582" y="-7598">stop!</label>
 			<nail x="-7642" y="-7573"/>
 		</transition>
 		<transition>
-			<source ref="id59"/>
-			<target ref="id56"/>
+			<source ref="id62"/>
+			<target ref="id59"/>
 			<label kind="synchronisation" x="-7727" y="-7275">close!</label>
 			<nail x="-7684" y="-7258"/>
 		</transition>
 		<transition>
-			<source ref="id56"/>
-			<target ref="id59"/>
+			<source ref="id59"/>
+			<target ref="id62"/>
 			<label kind="synchronisation" x="-7591" y="-7267">open!</label>
 			<nail x="-7591" y="-7258"/>
 		</transition>
 		<transition>
-			<source ref="id58"/>
-			<target ref="id57"/>
+			<source ref="id61"/>
+			<target ref="id60"/>
 			<label kind="synchronisation" x="-7412" y="-7496">play!</label>
 			<nail x="-7421" y="-7479"/>
 		</transition>
 		<transition>
-			<source ref="id57"/>
-			<target ref="id58"/>
+			<source ref="id60"/>
+			<target ref="id61"/>
 			<label kind="synchronisation" x="-7557" y="-7505">pause!</label>
 			<nail x="-7514" y="-7479"/>
 		</transition>
 		<transition>
-			<source ref="id57"/>
-			<target ref="id56"/>
+			<source ref="id60"/>
+			<target ref="id59"/>
 			<label kind="synchronisation" x="-7582" y="-7318">stop!</label>
 			<nail x="-7565" y="-7318"/>
 		</transition>
 		<transition>
-			<source ref="id56"/>
-			<target ref="id57"/>
+			<source ref="id59"/>
+			<target ref="id60"/>
 			<label kind="synchronisation" x="-7574" y="-7446">play!</label>
 			<nail x="-7557" y="-7420"/>
 		</transition>
 		<transition>
-			<source ref="id56"/>
-			<target ref="id55"/>
+			<source ref="id59"/>
+			<target ref="id58"/>
 			<label kind="synchronisation" x="-7752" y="-7318">powerOff!</label>
 			<nail x="-7718" y="-7318"/>
 		</transition>
 		<transition>
-			<source ref="id55"/>
-			<target ref="id56"/>
+			<source ref="id58"/>
+			<target ref="id59"/>
 			<label kind="synchronisation" x="-7761" y="-7437">powerOn!</label>
 			<nail x="-7727" y="-7420"/>
 		</transition>
